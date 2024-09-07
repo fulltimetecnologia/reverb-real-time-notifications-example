@@ -1,4 +1,4 @@
-###
+# Exemplo de notificações em tempo real do Laravel 11 Reverb
 
 Vamos usar um driver de reverb para enviar notificações em tempo real usando o servidor Echo no projeto Laravel 11.
 
@@ -6,25 +6,11 @@ O que é Reverb?
 
 Laravel Reverb traz comunicação em tempo real via WebSocket super rápida e escalável diretamente para a sua aplicação Laravel, e oferece integração perfeita com o conjunto existente de ferramentas de transmissão de eventos do Laravel.
 
-# Versões
+# Versões utilizadas
 
 - php 8.3
 - npm 10.7.0
 - node v18.20.4
-
-# Executar
-
-```bash
-php artisan serve
-```
-
-```bash
-php artisan reverb:start
-```
-
-```
-http://localhost:8000/
-```
 
 ### 
 
@@ -54,3 +40,90 @@ Passo 9: Criar e Atualizar Arquivos Blade
 Passo 10: Criar Usuário Admin
 
 Executar App Laravel
+
+
+# Configurar
+
+```bash
+php artisan install:broadcasting
+```
+
+```bash
+composer require laravel/reverb
+```
+
+```bash
+php artisan reverb:install
+```
+
+```bash
+npm install --save-dev laravel-echo
+```
+
+resources/js/echo.js
+```bash
+import Echo from 'laravel-echo';
+
+import Pusher from 'pusher-js';
+window.Pusher = Pusher;
+
+window.Echo = new Echo({
+    broadcaster: 'reverb',
+    key: import.meta.env.VITE_REVERB_APP_KEY,
+    wsHost: import.meta.env.VITE_REVERB_HOST,
+    wsPort: import.meta.env.VITE_REVERB_PORT ?? 80,
+    wssPort: import.meta.env.VITE_REVERB_PORT ?? 443,
+    forceTLS: (import.meta.env.VITE_REVERB_SCHEME ?? 'https') === 'https',
+    enabledTransports: ['ws', 'wss'],
+});
+```
+
+.env
+```bash
+BROADCAST_CONNECTION=reverb
+
+REVERB_APP_ID=256980
+REVERB_APP_KEY=f4l2tmwqf6eg0f6jz0mw
+REVERB_APP_SECRET=zioqeto9xrytlnlg7sj6
+REVERB_HOST="localhost"
+REVERB_PORT=8080
+REVERB_SCHEME=http
+
+VITE_REVERB_APP_KEY="${REVERB_APP_KEY}"
+VITE_REVERB_HOST="${REVERB_HOST}"
+VITE_REVERB_PORT="${REVERB_PORT}"
+VITE_REVERB_SCHEME="${REVERB_SCHEME}"
+```
+
+```bash
+php artisan db:seed --class=CreateAdminUser
+```
+
+# Executar
+
+```bash
+php artisan serve
+```
+
+```bash
+php artisan reverb:start
+```
+
+```
+http://localhost:8000/
+```
+
+```
+admin@gmail.com
+123456
+```
+
+Agora, você tem um usuário administrador e pode cadastrar novos usuários normais pelo formulário de registro.
+
+Você pode criar postagens e o usuário administrador receberá a notificação.
+
+Let's go
+
+![alt text](image-1.png)
+
+![alt text](image.png)
